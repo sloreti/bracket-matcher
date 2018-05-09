@@ -1,0 +1,34 @@
+{
+  "name": "Bracket Matcher",
+  "version": "1.0",
+  "description": "Build an Extension!",
+  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "options_page": "options.html",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["matcher.css"],
+      "js": ["thirdParty/jquery-3.3.1.min.js", "matcher.js"]
+    }
+  ],
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/metal-bracket-16.png",
+      "32": "images/metal-bracket-32.png",
+      "48": "images/metal-bracket-48.png",
+      "128": "images/metal-bracket-128.png"
+    }
+  },
+  "icons": {
+    "16": "images/metal-bracket-16.png",
+    "32": "images/metal-bracket-32.png",
+    "48": "images/metal-bracket-48.png",
+    "128": "images/metal-bracket-128.png"
+  },
+  "manifest_version": 2
+}
