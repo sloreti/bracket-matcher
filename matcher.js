@@ -3,6 +3,7 @@
 'use strict';
 
 const MAX_HEIGHT = 5; // Max number of nodes to go up the DOM checking for allBracketsMatchIn()
+const HIGHLIGHT_CLASS = "highlighted-bracket";
 const closingBrackets = { 
 							'}':'{', 
 							']':'[', 
@@ -18,6 +19,12 @@ const bracketsRe = /\[|\{|\(|\]|\}|\)/
 
 
 $(document).click(function(event) {
+
+	// If clicked a highlighted bracket, remove highlight
+	if ($(event.target).hasClass(HIGHLIGHT_CLASS)) {
+		var uuid = $(event.target).data("highlight-id")
+		removeHighlight(uuid)
+	}
 
 	var s = window.getSelection();
     var range = s.getRangeAt(0);
@@ -50,16 +57,18 @@ function highlight(node, range, clickedChar, uuid) {
 	range.deleteContents();
 
 	var highlight = document.createElement('span');
-	highlight.id = uuid
-	highlight.className = "highlighted-bracket";
+	highlight.setAttribute('data-highlight-id', uuid)
+	highlight.className = HIGHLIGHT_CLASS;
 	highlight.innerHTML = clickedChar;
 
     range.insertNode(highlight);
     range.collapse();
 }
 
-function highlightStr(clickedChar) {
-	return "<span class='highlighted-bracket'>" + clickedChar + "</span>"
+function highlightStr(clickedChar, uuid) {
+	return "<span class='" + HIGHLIGHT_CLASS + "' data-highlight-id='" + uuid + "'>" + 
+			clickedChar + 
+			"</span>"
 }
 
 var bracketPresentIn = str => bracketsRe.test(str)
@@ -71,6 +80,8 @@ var uuidv4 = () => {
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
 }
+
+var removeHighlight = id => $("[data-highlight-id='" + id + "']").contents().unwrap()
 
 
 function findMatching(bracket, str, idToSplitOn) {
@@ -98,7 +109,7 @@ function findMatching(bracket, str, idToSplitOn) {
 
 				if (stack.length == 0) { 
 					// Success! 
-					return buildNewInnerHtml(bracket, back, splitter, forward, re.lastIndex-1, searchForwards)
+					return buildNewInnerHtml(bracket, idToSplitOn, back, splitter, forward, re.lastIndex-1, searchForwards)
 				}
 
 			} else {
@@ -111,18 +122,18 @@ function findMatching(bracket, str, idToSplitOn) {
 	return false
 }
 
-function buildNewInnerHtml(bracket, back, splitter, forward, locationOfMatch, wasSearchingForward) {
+function buildNewInnerHtml(bracket, uuid, back, splitter, forward, locationOfMatch, wasSearchingForward) {
 	var innerHtml;
 	if (wasSearchingForward) {
 		innerHtml = back + 
 					splitter + 
 					forward.slice(0, locationOfMatch) +
-					highlightStr(bracket) +
+					highlightStr(bracket, uuid) +
 					forward.slice(locationOfMatch+1, forward.length)
 	} else {
 		locationOfMatch = back.length - locationOfMatch
 		innerHtml = back.slice(0, locationOfMatch-1) +
-					highlightStr(bracket) +
+					highlightStr(bracket, uuid) +
 					back.slice(locationOfMatch, back.length) +
 					splitter + 
 					forward
