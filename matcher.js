@@ -87,7 +87,7 @@ var removeHighlight = id => $("[data-highlight-id='" + id + "']").contents().unw
 function findMatching(bracket, str, idToSplitOn) {
 
 	const re = new RegExp( bracketsRe, 'g');
-	const reToSplitOn = new RegExp(idToSplitOn+'.+\>.\<');
+	const reToSplitOn = new RegExp(idToSplitOn+'.+?\>.\<');
 	var [back, forward] = str.split(reToSplitOn);
 	var splitter = reToSplitOn.exec(str)[0]
 	var stack = [bracket];
