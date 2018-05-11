@@ -17,8 +17,22 @@ const startingBrackets = {
 const bracketsRe = /\[|\{|\(|\]|\}|\)/
 // const openingHtmlTagRe = /\<[a-zA-Z]+(\s.+)?\>/ // Rather permissive regex, consider replacing w/ https://stackoverflow.com/a/3524392/3681279
 
+$(document).ready(function(){
+	$("iframe").on('load', function(){
 
-$(document).click(function(event) {
+
+		// Remove duplicate handlers
+		$(document).off('click')
+		$("iframe").off('click')
+
+		styleIframes()
+		$(document).on('click', handleClick);
+		$("iframe").contents().find("body").on('click', handleClick);
+
+	});
+});
+
+function handleClick(event) {
 
 	// If clicked a highlighted bracket, remove highlight
 	if ($(event.target).hasClass(HIGHLIGHT_CLASS)) {
@@ -26,7 +40,9 @@ $(document).click(function(event) {
 		removeHighlight(uuid)
 	}
 
-	var s = window.getSelection();
+	var s = $(this).is(document) ? 
+			window.getSelection() : 
+			this.ownerDocument.defaultView.getSelection(); // Need to check if click in window or in iframe
     var range = s.getRangeAt(0);
     var node = s.anchorNode;
     var offset = s.anchorOffset - 1;
@@ -49,7 +65,8 @@ $(document).click(function(event) {
         	node = node.parentNode;
         }
     }
-});
+}
+
 
 function highlight(node, range, clickedChar, uuid) {
 
@@ -81,7 +98,10 @@ var uuidv4 = () => {
   )
 }
 
-var removeHighlight = id => $("[data-highlight-id='" + id + "']").contents().unwrap()
+var removeHighlight = id => {
+	$("[data-highlight-id='" + id + "']").contents().unwrap()
+	$("iframe").contents().find("[data-highlight-id='" + id + "']").contents().unwrap()
+}
 
 
 function findMatching(bracket, str, idToSplitOn) {
@@ -139,4 +159,18 @@ function buildNewInnerHtml(bracket, uuid, back, splitter, forward, locationOfMat
 					forward
 	}
 	return innerHtml;
+}
+
+function styleIframes() {
+	var iframeHead = $('iframe').contents().find("head")
+	var highlightStyle = $(`
+						<style>
+							.highlighted-bracket {
+								background-color: #ff980099;
+						    	padding: 1px 2px;
+						    	font-weight: bold;
+						    	border-radius: 3px;
+							}
+						</style>`)
+	iframeHead.append(highlightStyle)
 }
