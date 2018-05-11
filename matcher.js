@@ -18,19 +18,24 @@ const bracketsRe = /\[|\{|\(|\]|\}|\)/
 // const openingHtmlTagRe = /\<[a-zA-Z]+(\s.+)?\>/ // Rather permissive regex, consider replacing w/ https://stackoverflow.com/a/3524392/3681279
 
 $(document).ready(function(){
-	$("iframe").on('load', function(){
-
-
-		// Remove duplicate handlers
-		$(document).off('click')
-		$("iframe").off('click')
-
-		styleIframes()
-		$(document).on('click', handleClick);
-		$("iframe").contents().find("body").on('click', handleClick);
-
-	});
+	if ($("iframe").length) {
+		$("iframe").on('load', function(){
+			loadHandlers()
+		});
+	} else {
+		loadHandlers()
+	}
 });
+
+function loadHandlers() {
+	// Remove duplicate handlers
+	$(document).off('click')
+	$("iframe").off('click')
+
+	styleIframes()
+	$(document).on('click', handleClick);
+	$("iframe").contents().find("body").on('click', handleClick);
+}
 
 function handleClick(event) {
 
