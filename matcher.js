@@ -120,9 +120,10 @@ function buildNewInnerHtml(bracket, back, splitter, forward, locationOfMatch, wa
 					highlightStr(bracket) +
 					forward.slice(locationOfMatch+1, forward.length)
 	} else {
-		innerHtml = back.slice(0, locationOfMatch) +
+		locationOfMatch = back.length - locationOfMatch
+		innerHtml = back.slice(0, locationOfMatch-1) +
 					highlightStr(bracket) +
-					back.slice(locationOfMatch, forward.length) +
+					back.slice(locationOfMatch, back.length) +
 					splitter + 
 					forward
 	}
