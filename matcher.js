@@ -16,6 +16,12 @@ const startingBrackets = {
 						}
 const bracketsRe = /\[|\{|\(|\]|\}|\)/
 // const openingHtmlTagRe = /\<[a-zA-Z]+(\s.+)?\>/ // Rather permissive regex, consider replacing w/ https://stackoverflow.com/a/3524392/3681279
+var isDragging = false;
+var mousedownX = 0;
+var mousedownY = 0;
+var mouseDistanceTravelled = 0;
+const MAX_MOUSE_DISTANCE = 4;
+
 
 $(document).ready(function(){
 	if ($("iframe").length) {
@@ -29,29 +35,69 @@ $(document).ready(function(){
 
 function loadHandlers() {
 	// Remove duplicate handlers
-	$(document).off('click')
-	$("iframe").off('click')
+	$(document).off()
+	$("iframe").contents().find("body").off()
 
 	styleIframes()
-	$(document).on('click', handleClick);
-	$("iframe").contents().find("body").on('click', handleClick);
+	attachDragIgnoringHandler( $(document), handleClick, handleClick)
+	attachDragIgnoringHandler( $("iframe").contents().find("body"), handleClick)
+}
+
+// Used to listen to only clicks and ignore drags,
+// over a threshold defined by MAX_MOUSE_DISTANCE
+function attachDragIgnoringHandler(target, fn) {
+	target.mousedown(function(event) {
+			isDragging = false;
+			mousedownX = event.clientX;
+			mousedownY = event.clientY;
+			mouseDistanceTravelled = 0
+		})
+		.mousemove(function(event) {
+			var newDistance = Math.sqrt(
+								Math.pow(mousedownY - event.clientY, 2) + 
+                            	Math.pow(mousedownX - event.clientX, 2)
+                            	)
+			mouseDistanceTravelled += newDistance
+			mousedownY = event.clientY
+            mousedownX = event.clientX
+            if (mouseDistanceTravelled > MAX_MOUSE_DISTANCE) {
+            	isDragging = true;
+            }
+		 })
+		.mouseup(function(event) {
+		    var wasDragging = isDragging;
+		    console.log(mouseDistanceTravelled)
+		    isDragging = false;
+		    if (!wasDragging) {
+		        fn.bind(this)(event);
+		    }
+		});
 }
 
 function handleClick(event) {
-
-	// If clicked a highlighted bracket, remove highlight
-	if ($(event.target).hasClass(HIGHLIGHT_CLASS)) {
-		var uuid = $(event.target).data("highlight-id")
-		removeHighlight(uuid)
-	}
 
 	var s = $(this).is(document) ? 
 			window.getSelection() : 
 			this.ownerDocument.defaultView.getSelection(); // Need to check if click in window or in iframe
     var range = s.getRangeAt(0);
+    range.collapse()
     var node = s.anchorNode;
     var offset = s.anchorOffset - 1;
     var clickedChar = node.textContent[offset]
+
+    // If clicked a highlighted bracket, remove highlight.
+    // Second check is needed because clicks right on the 
+    // edge of highlight span think they're clicks on parent
+    // but Selection disagrees and think its inside span
+	if ($(event.target).hasClass(HIGHLIGHT_CLASS) ||
+		$(node.parentNode).hasClass(HIGHLIGHT_CLASS)) {
+
+		var uuid = $(event.target).hasClass(HIGHLIGHT_CLASS) ?
+					$(event.target).data("highlight-id") :
+					$(node.parentNode).data("highlight-id")
+		removeHighlight(uuid)
+		return
+	}
 
     if (bracketPresentIn(clickedChar)) {
     	
