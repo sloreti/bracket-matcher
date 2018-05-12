@@ -20,7 +20,7 @@ var isDragging = false;
 var mousedownX = 0;
 var mousedownY = 0;
 var mouseDistanceTravelled = 0;
-const MAX_MOUSE_DISTANCE = 4;
+const MAX_MOUSE_DISTANCE = 2;
 
 
 $(document).ready(function(){
@@ -66,7 +66,6 @@ function attachDragIgnoringHandler(target, fn) {
 		 })
 		.mouseup(function(event) {
 		    var wasDragging = isDragging;
-		    console.log(mouseDistanceTravelled)
 		    isDragging = false;
 		    if (!wasDragging) {
 		        fn.bind(this)(event);
@@ -80,7 +79,6 @@ function handleClick(event) {
 			window.getSelection() : 
 			this.ownerDocument.defaultView.getSelection(); // Need to check if click in window or in iframe
     var range = s.getRangeAt(0);
-    range.collapse()
     var node = s.anchorNode;
     var offset = s.anchorOffset - 1;
     var clickedChar = node.textContent[offset]
