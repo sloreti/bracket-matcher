@@ -105,16 +105,19 @@ function handleClick(event) {
         var strToSearch;
         for (var i = 0; i < MAX_HEIGHT; i++) {
         	strToSearch = node.parentNode.innerHTML;
-        	var innerHtmlWithMatchHighlighted = findMatching(clickedChar, strToSearch, uuid)
-        	if ( innerHtmlWithMatchHighlighted ) {
-        		// Success!
-        		node.parentNode.innerHTML = innerHtmlWithMatchHighlighted
-        		return
-        	}
-        	node = node.parentNode;
+        	if (strToSearch) {
+	        	var innerHtmlWithMatchHighlighted = findMatching(clickedChar, strToSearch, uuid)
+	        	if ( innerHtmlWithMatchHighlighted ) {
+	        		// Success!
+	        		node.parentNode.innerHTML = innerHtmlWithMatchHighlighted
+	        		return
+	        	}
+	        	node = node.parentNode;
+	        }
         }
 
-        // TODO: Didn't find match, remove highlight
+        // Didn't find match, remove highlight
+        removeHighlight(uuid)
     }
 }
 
