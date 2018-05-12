@@ -113,6 +113,8 @@ function handleClick(event) {
         	}
         	node = node.parentNode;
         }
+
+        // TODO: Didn't find match, remove highlight
     }
 }
 
@@ -219,6 +221,7 @@ function styleIframes() {
 						    	padding: 1px 2px;
 						    	font-weight: bold;
 						    	border-radius: 3px;
+						    	user-select: none;
 							}
 						</style>`)
 	iframeHead.append(highlightStyle)
