@@ -29,7 +29,7 @@ $(document).ready(function(){
 
 	if ($("iframe").length) {
 		$("iframe").on('load', function(){
-			loadIframeHandlers()
+			loadIframeHandlers.bind(this)()
 		});
 	}
 });
@@ -40,13 +40,11 @@ function loadHandlers() {
 }
 
 function loadIframeHandlers() {
-	$("iframe").each(function( iframe ) {
-		if ( canAccessIframe(iframe[0])) {
-			iframe.contents().find("body").off()// Remove duplicate handlers
-			styleIframe( iframe )
-			attachDragIgnoringHandler( iframe.contents().find("body"), handleClick)
-		}
-	});
+	if ( canAccessIframe(this)) {
+		$(this).contents().find("body").off()// Remove duplicate handlers
+		styleIframe( $(this) )
+		attachDragIgnoringHandler( $(this).contents().find("body"), handleClick)
+	}
 }
 
 // Used to listen to only clicks and ignore drags,
@@ -98,21 +96,29 @@ function handleClick(event) {
     // If clicked a highlighted bracket, remove highlight.
     // Second check is needed because clicks right on the 
     // edge of highlight span think they're clicks on parent
-    // but Selection disagrees and think its inside span
+    // but Selection disagrees and think its inside span.
+    // Third check needed if usingRightNeighbor was used previously
 	if ($(event.target).hasClass(HIGHLIGHT_CLASS) ||
-		$(node.parentNode).hasClass(HIGHLIGHT_CLASS)) {
+		$(node.parentNode).hasClass(HIGHLIGHT_CLASS) ||
+		$(node.nextSibling).hasClass(HIGHLIGHT_CLASS)) {
 
-		var uuid = $(event.target).hasClass(HIGHLIGHT_CLASS) ?
-					$(event.target).data("highlight-id") :
-					$(node.parentNode).data("highlight-id")
+		var uuid = $(event.target).data("highlight-id")
+		uuid = uuid ? uuid : $(node.parentNode).data("highlight-id")
+		uuid = uuid ? uuid : $(node.nextSibling).data("highlight-id")
 		removeHighlight(uuid)
 		return
 	}
 
+	var usingRightNeighbor = false;
+    if(!bracketPresentIn(clickedChar)) {
+    	var [node, range, clickedChar] = checkRightNeighbor(node, range, node.textContent)
+    	usingRightNeighbor = true;
+    }
+
     if (bracketPresentIn(clickedChar)) {
     	
     	var uuid = uuidv4()
-    	highlight(node, range, clickedChar, uuid)
+    	highlight(node, range, clickedChar, uuid, usingRightNeighbor)
 
         var strToSearch;
         for (var i = 0; i < MAX_HEIGHT; i++) {
@@ -134,9 +140,14 @@ function handleClick(event) {
 }
 
 
-function highlight(node, range, clickedChar, uuid) {
+function highlight(node, range, clickedChar, uuid, usingRightNeighbor) {
 
-	range.setStart(node, range.startOffset-1);
+	if (usingRightNeighbor) {
+		range.setStart(node, range.startOffset);
+		range.setEnd(node, range.startOffset+1);
+	} else {
+		range.setStart(node, range.startOffset-1);
+	}	
 	range.deleteContents();
 
 	var highlight = document.createElement('span');
@@ -166,9 +177,9 @@ var uuidv4 = () => {
 
 var removeHighlight = id => {
 	$("[data-highlight-id='" + id + "']").contents().unwrap()
-	$("iframe").each(function( iframe ) {
-		if ( canAccessIframe(iframe[0])) {
-			iframe.contents().find("[data-highlight-id='" + id + "']").contents().unwrap()
+	$("iframe").each(function( index, iframe ) {
+		if ( canAccessIframe(iframe)) {
+			$(iframe).contents().find("[data-highlight-id='" + id + "']").contents().unwrap()
 		}
 	});
 }
@@ -184,6 +195,16 @@ var canAccessIframe = iframe => {
     return(html !== null);
 }
 
+var checkRightNeighbor = (node, range, str) => {
+	if (range.endOffset >= str.length) {
+		var nextNode = range.commonAncestorContainer.nextSibling
+		var range = document.createRange();
+		range.setStart(nextNode, 0);
+		var nextNodeText = nextNode.textContent
+		return [nextNode, range, nextNodeText[0]]
+	}
+	return [node, range, str[range.endOffset]]
+}
 
 function findMatching(bracket, str, idToSplitOn) {
 
