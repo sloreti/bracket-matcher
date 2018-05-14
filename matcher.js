@@ -24,23 +24,29 @@ const MAX_MOUSE_DISTANCE = 2;
 
 
 $(document).ready(function(){
+
+	loadHandlers()
+
 	if ($("iframe").length) {
 		$("iframe").on('load', function(){
-			loadHandlers()
+			loadIframeHandlers()
 		});
-	} else {
-		loadHandlers()
 	}
 });
 
 function loadHandlers() {
-	// Remove duplicate handlers
-	$(document).off()
-	$("iframe").contents().find("body").off()
-
-	styleIframes()
+	$(document).off() // Remove duplicate handlers
 	attachDragIgnoringHandler( $(document), handleClick, handleClick)
-	attachDragIgnoringHandler( $("iframe").contents().find("body"), handleClick)
+}
+
+function loadIframeHandlers() {
+	$("iframe").each(function( iframe ) {
+		if ( canAccessIframe(iframe[0])) {
+			iframe.contents().find("body").off()// Remove duplicate handlers
+			styleIframe( iframe )
+			attachDragIgnoringHandler( iframe.contents().find("body"), handleClick)
+		}
+	});
 }
 
 // Used to listen to only clicks and ignore drags,
@@ -78,6 +84,12 @@ function handleClick(event) {
 	var s = $(this).is(document) ? 
 			window.getSelection() : 
 			this.ownerDocument.defaultView.getSelection(); // Need to check if click in window or in iframe
+
+	if (s.rangeCount == 0) { 
+		// Browser is failing to find a range in Selection.
+		// Return so getRangeAt(0) doesn't break
+		return
+	}
     var range = s.getRangeAt(0);
     var node = s.anchorNode;
     var offset = s.anchorOffset - 1;
@@ -154,7 +166,22 @@ var uuidv4 = () => {
 
 var removeHighlight = id => {
 	$("[data-highlight-id='" + id + "']").contents().unwrap()
-	$("iframe").contents().find("[data-highlight-id='" + id + "']").contents().unwrap()
+	$("iframe").each(function( iframe ) {
+		if ( canAccessIframe(iframe[0])) {
+			iframe.contents().find("[data-highlight-id='" + id + "']").contents().unwrap()
+		}
+	});
+}
+
+var canAccessIframe = iframe => {
+    var html = null;
+    try { 
+      var doc = iframe.contentDocument || iframe.contentWindow.document;
+      html = doc.body.innerHTML;
+    } catch(err){
+      // do nothing
+    }
+    return(html !== null);
 }
 
 
@@ -215,8 +242,8 @@ function buildNewInnerHtml(bracket, uuid, back, splitter, forward, locationOfMat
 	return innerHtml;
 }
 
-function styleIframes() {
-	var iframeHead = $('iframe').contents().find("head")
+function styleIframe( iframe ) {
+	var iframeHead = iframe.contents().find("head")
 	var highlightStyle = $(`
 						<style>
 							.highlighted-bracket {
