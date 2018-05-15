@@ -109,6 +109,7 @@ function handleClick(event) {
 		return
 	}
 
+	// TODO: Add explanation of this block
 	var usingRightNeighbor = false;
     if(clickedChar && !bracketPresentIn(clickedChar)) {
     	var [node, range, clickedChar] = checkRightNeighbor(node, range, node.textContent)

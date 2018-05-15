@@ -12,7 +12,8 @@ body{
   align-items: center;
 }
 
-.highlight-button {
+.highlight-button,
+.highlight-button#inner > .highlighted{
   display: flex;
   font-size: 1.8rem;
   margin: 10px;
@@ -24,7 +25,6 @@ body{
 }
 
 .highlighted {
-  border: 1px solid #e2e2e2;
   border-radius: 3px;
 }
 
@@ -89,7 +89,7 @@ body{
 }
 
 input:checked + .slider {
-  background-color: #2ab934;
+  background-color: #e2e2e2;
 }
 
 input:focus + .slider {

@@ -1,16 +1,13 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright 2018 Luke Loreti. All rights reserved.
 
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({color: '#3aa757'}, function() {
-    console.log('The color is green.');
-  });
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      actions: [new chrome.declarativeContent.ShowPageAction()]
-    }]);
-  });
+  chrome.storage.sync.set(
+    { 
+      color: '#ff9800',
+      enabled: true,
+      highlightType : 'brackets'
+    }
+  );
 });

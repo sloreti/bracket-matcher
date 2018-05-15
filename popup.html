@@ -5,21 +5,29 @@
     <link rel="stylesheet" href="thirdParty/spectrum.min.css">
   </head>
   <body>
-    <label class="switch"><input type="checkbox" id="togBtn"><div class="slider round"><!--ADDED HTML --><span class="on"></span><span class="off"></span><!--END--></div></label>
+    <label class="switch">
+      <input type="checkbox" id="enabled" checked>
+      <div class="slider round">
+        <span class="on"></span>
+        <span class="off"></span>
+      </div>
+    </label>
     <div id="controls">
-      <div class="highlight-button">
+      <div class="highlight-button" id="brackets">
         <div class="highlighted">{</div>
         <div class="ellipsis">...</div>
         <div class="highlighted">}</div>
       </div>
-      <div class="highlight-button highlighted">
-        <div>{</div>
-        <div class="ellipsis">...</div>
-        <div>}</div>
+      <div class="highlight-button" id="inner">
+        <div class="highlighted">
+          <div>{</div>
+          <div class="ellipsis">...</div>
+          <div>}</div>
+        </div>
       </div>
       <div id="colorPicker">
         <input id="swab" />
-        <div id="label">#ff3312</div>
+        <div id="label">disabled</div>
       </div>
     </div>
     <script src="thirdParty/jquery-3.3.1.min.js"></script>
