@@ -21,17 +21,17 @@
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/metal-bracket-16.png",
-      "32": "images/metal-bracket-32.png",
-      "48": "images/metal-bracket-48.png",
-      "128": "images/metal-bracket-128.png"
+      "16": "images/b16.png",
+      "32": "images/b32.png",
+      "48": "images/b48.png",
+      "128": "images/b128.png"
     }
   },
   "icons": {
-    "16": "images/metal-bracket-16.png",
-    "32": "images/metal-bracket-32.png",
-    "48": "images/metal-bracket-48.png",
-    "128": "images/metal-bracket-128.png"
+    "16": "images/b16.png",
+    "32": "images/b32.png",
+    "48": "images/b48.png",
+    "128": "images/b128.png"
   },
   "manifest_version": 2
 }
