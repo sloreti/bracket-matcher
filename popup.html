@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="popup.css" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="thirdParty/spectrum.min.css">
   </head>
   <body>
     <label class="switch"><input type="checkbox" id="togBtn"><div class="slider round"><!--ADDED HTML --><span class="on"></span><span class="off"></span><!--END--></div></label>
@@ -17,10 +18,12 @@
         <div>}</div>
       </div>
       <div id="colorPicker">
-        <button id="changeColor"></button>
+        <input id="swab" />
         <div id="label">#ff3312</div>
       </div>
     </div>
+    <script src="thirdParty/jquery-3.3.1.min.js"></script>
+    <script src="thirdParty/spectrum.min.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
