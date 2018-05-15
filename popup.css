@@ -1,8 +1,63 @@
+body{ 
+  margin: 0px;
+  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-weight: bold;
+  color: #444;
+}
+
+#controls {
+  border-top: 1px solid #e2e2e2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.highlight-button {
+  display: flex;
+  font-size: 1.8rem;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.highlight-button:first-child {
+  margin-top: 20px;
+}
+
+.highlighted {
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+}
+
+.ellipsis {
+  letter-spacing: -10px;
+  margin-left: 0px;
+  margin-right: 9px;
+}
+
+#colorPicker {
+  display: inherit;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  margin-bottom: 20px;
+}
+
+#changeColor {
+  height: 25px;
+  width: 25px;
+  outline: none;
+}
+
+#label {
+  margin-top: 4px;
+}
+
 .switch {
   position: relative;
   display: inline-block;
-  width: 90px;
-  height: 34px;
+  width: 50px;
+  height: 24px;
+  margin: 20px 30px;;
 }
 
 .switch input {display:none;}
@@ -14,21 +69,23 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ca2222;
+  background-color: #e2e2e2;
   -webkit-transition: .4s;
   transition: .4s;
+  box-shadow: inset 0px 1px 3px #848484;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 30px;
+  width: 30px;
+  left: -2px;
+  bottom: -3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
+  box-shadow: 0px 1px 3px #4c4c4c;
 }
 
 input:checked + .slider {
@@ -40,9 +97,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(55px);
-  -ms-transform: translateX(55px);
-  transform: translateX(55px);
+  -webkit-transform: translateX(25px);
+  -ms-transform: translateX(25px);
+  transform: translateX(25px);
 }
 
 /*------ ADDED CSS ---------*/
