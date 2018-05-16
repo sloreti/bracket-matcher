@@ -15,6 +15,9 @@ body{
 .highlight-button,
 .highlight-button#inner > .highlighted{
   display: flex;
+}
+
+.highlight-button {
   font-size: 1.8rem;
   margin: 10px;
   cursor: pointer;
@@ -133,4 +136,22 @@ input:checked + .slider .off
 }
 
 .slider.round:before {
-  border-radius: 50%;}
+  border-radius: 50%;
+}
+
+.sp-replacer {
+  border: none !important;
+  background: none !important;
+}
+
+.sp-preview {
+  width: 21px !important;
+  height: 20px !important;
+  margin-right: 0px !important;
+  border: solid 1px #e2e2e2 !important;
+}
+
+.sp-dd {
+  display: none;
+}
+
