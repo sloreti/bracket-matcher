@@ -21,6 +21,7 @@ var mousedownX = 0;
 var mousedownY = 0;
 var mouseDistanceTravelled = 0;
 const MAX_MOUSE_DISTANCE = 2;
+var color;
 
 
 $(document).ready(function(){
@@ -77,7 +78,7 @@ function attachDragIgnoringHandler(target, fn) {
 		});
 }
 
-function handleClick(event) {
+async function handleClick(event) {
 
 	var s = $(this).is(document) ? 
 			window.getSelection() : 
@@ -119,7 +120,7 @@ function handleClick(event) {
     if (bracketPresentIn(clickedChar)) {
     	
     	var uuid = uuidv4()
-    	highlight(node, range, clickedChar, uuid, usingRightNeighbor)
+    	await highlight(node, range, clickedChar, uuid, usingRightNeighbor)
 
         var strToSearch;
         for (var i = 0; i < MAX_HEIGHT; i++) {
@@ -141,28 +142,37 @@ function handleClick(event) {
 }
 
 
-function highlight(node, range, clickedChar, uuid, usingRightNeighbor) {
+async function highlight(node, range, clickedChar, uuid, usingRightNeighbor) {
 
-	if (usingRightNeighbor) {
-		range.setStart(node, range.startOffset);
-		range.setEnd(node, range.startOffset+1);
-	} else {
-		range.setStart(node, range.startOffset-1);
-	}	
-	range.deleteContents();
+	return new Promise(async function(resolve) {
 
-	var highlight = document.createElement('span');
-	highlight.setAttribute('data-highlight-id', uuid)
-	highlight.className = HIGHLIGHT_CLASS;
-	highlight.innerHTML = clickedChar;
+		if (usingRightNeighbor) {
+			range.setStart(node, range.startOffset);
+			range.setEnd(node, range.startOffset+1);
+		} else {
+			range.setStart(node, range.startOffset-1);
+		}	
+		range.deleteContents();
 
-    range.insertNode(highlight);
-    range.collapse();
+		var data = await chrome.storage.sync.get('color');
+		color = data.color
+		var highlight = document.createElement('span');
+		highlight.setAttribute('data-highlight-id', uuid)
+		highlight.style.backgroundColor = data.color 
+		highlight.className = HIGHLIGHT_CLASS;
+		highlight.innerHTML = clickedChar;
+
+	    range.insertNode(highlight);
+	    range.collapse();
+	    resolve()
+	});
 }
 
 function highlightStr(clickedChar, uuid) {
-	return "<span class='" + HIGHLIGHT_CLASS + "' data-highlight-id='" + uuid + "'>" + 
-			clickedChar + 
+	return "<span class='" + HIGHLIGHT_CLASS 
+				+ "' style='background-color:" + color 
+				+ "' data-highlight-id='" + uuid + "'>" + 
+				clickedChar + 
 			"</span>"
 }
 
@@ -265,16 +275,18 @@ function buildNewInnerHtml(bracket, uuid, back, splitter, forward, locationOfMat
 }
 
 function styleIframe( iframe ) {
-	var iframeHead = iframe.contents().find("head")
-	var highlightStyle = $(`
-						<style>
-							.highlighted-bracket {
-								background-color: #ff980099;
-						    	padding: 1px 2px;
-						    	font-weight: bold;
-						    	border-radius: 3px;
-						    	user-select: none;
-							}
-						</style>`)
-	iframeHead.append(highlightStyle)
+	chrome.storage.sync.get(['color'], function(data) {
+      	var iframeHead = iframe.contents().find("head")
+		var highlightStyle = $(`
+							<style>
+								.highlighted-bracket {
+									background-color: ` + data.color + `;
+							    	padding: 1px 2px;
+							    	font-weight: bold;
+							    	border-radius: 3px;
+							    	user-select: none;
+								}
+							</style>`)
+		iframeHead.append(highlightStyle)
+    });
 }
