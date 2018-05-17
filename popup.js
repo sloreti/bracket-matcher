@@ -14,7 +14,9 @@ chrome.storage.sync.get(['enabled', 'color', 'highlightType'], function(data) {
 	highlightType = data.highlightType;
 	$("#swab").spectrum({ 
 		color: color,
-		clickoutFiresChange: true,
+		clickoutFiresChange: false,
+		showInput: true,
+		preferredFormat: "hex",
 		change: changeColor 
 	});
 	handleToggle()
@@ -61,7 +63,7 @@ function changeHighlightType() {
 function removeHighlights() {
 	$(".highlighted").css({
 		"background-color": "white",
-		"border" : "1px solid #e2e2e2"
+		"border" : "1px solid #cacaca"
 	})	
 }
 

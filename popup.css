@@ -6,7 +6,7 @@ body{
 }
 
 #controls {
-  border-top: 1px solid #e2e2e2;
+  border-top: 1px solid #cacaca;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,7 +28,7 @@ body{
 }
 
 .highlighted {
-  border-radius: 3px;
+  border-radius: 5px;
 }
 
 .ellipsis {
@@ -153,5 +153,85 @@ input:checked + .slider .off
 
 .sp-dd {
   display: none;
+}
+
+.sp-container {
+  top: 0px !important;
+  left: 0px !important;
+  font: inherit !important;
+  color: inherit !important;
+  border: none !important;
+  padding: 0 !important;
+  background-color: #ffffff00 !important;
+}
+
+.sp-picker-container {
+  padding: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  border-left: none !important;
+  height: 268px;
+}
+
+.sp-button-container {
+  float: none !important;
+  padding-top: 24px !important;
+  padding-bottom: 7px !important;
+  background-color: #eaeaea;
+}
+
+.sp-container button {
+  background-image: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  font-size: inherit !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  font-weight: bold !important;
+}
+
+.sp-input-container {
+  position: absolute !important;
+  top: 228px !important;
+  width: 64px !important;
+  left: 24px !important;
+  background-color: white !important;
+}
+
+.sp-color {
+  border: none !important;
+}
+
+.sp-hue {
+    position: absolute;
+    top: 95px !important;
+    right: 0px !important;
+    bottom: 0px !important;
+    left: 45px !important;
+    width: 20px !important;
+    height: 109px !important;
+    transform: rotate(-90deg);
+}
+
+.sp-input {
+  font-weight: bold !important;
+  font: inherit !important;
+  border: 1px solid #cacaca !important;
+}
+
+.sp-dragger {
+  background: #ffffff00 !important;
+  box-shadow: 0px 0px 2px #404040 !important;
+}
+
+.sp-cancel {
+  font-size: inherit !important;
+  padding: 6px !important;
+  margin-right: 6px !important;
+}
+
+.sp-container button:hover {
+  background-color: inherit !important;
+  text-decoration: underline; !important;
 }
 
