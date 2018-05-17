@@ -3,7 +3,6 @@
   "version": "1.0",
   "description": "Find that other }, ], or )",
   "permissions": ["activeTab", "declarativeContent", "storage"],
-  "options_page": "options.html",
   "background": {
     "scripts": ["background.js"],
     "persistent": false
